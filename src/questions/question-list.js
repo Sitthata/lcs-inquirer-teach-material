@@ -82,9 +82,10 @@ export async function runOrder() {
 
     // Display the collected order details
     console.log("\n--- Your Ice Cream Order ---");
-    for (const [key, value] of Object.entries(order)) {
-      console.log(`${key}: ${value}`);
-    }
+    // for (const [key, value] of Object.entries(order)) {
+    //   console.log(`${key}: ${value}`);
+    // }
+    console.log(answers)
     console.log("-----------------------------\n");
 
     console.log("Thank you for your order! Enjoy your ice cream!\n");

@@ -1,14 +1,14 @@
 // form.js
 
 // Import the Inquirer.js library
-// Example: import inquirer from 'inquirer';
+import inquirer from 'inquirer';
 
 /**
  * Define mock user credentials for login
  * Replace 'mockUsername' and 'mockPassword' with desired mock values
  */
-const MOCK_USERNAME = 'mockUsername';
-const MOCK_PASSWORD = 'mockPassword';
+const MOCK_USERNAME = "mockUsername";
+const MOCK_PASSWORD = "mockPassword";
 
 /**
  * Function to handle user login
@@ -23,16 +23,42 @@ async function login() {
 
   try {
     // Use inquirer.prompt to ask for username and password
+    const answers = await inquirer.prompt([
+      {
+        type: "input",
+        name: "username",
+        message: "Enter your username:",
+        validate: (input) => {
+          if (input === "") {
+            return "Username cannot be empty"
+          }
+          return true
+        }
+      },
+      {
+        type: "password",
+        name: "password",
+        message: "Enter your password:",
+        mask: true,
+        validate: (input) => {
+          if (input === "") {
+            return "Password cannot be empty"
+          }
+          return true
+        }
+      }
+    ])
+    
+    if (answers.username === MOCK_USERNAME) {
+      
+    }
+
     // Example questions:
     // 1. Username (input type with validation and filter)
     // 2. Password (password type with validation)
-
     // Capture the user's input
-
     // Validate the entered credentials against the mock credentials
-
     // If credentials match, inform the user of successful login and return true
-
     // If credentials do not match, inform the user and return false
   } catch (error) {
     // Handle any errors that occur during the login process
@@ -51,7 +77,6 @@ async function login() {
 async function displayForm() {
   try {
     // Display a message indicating that the form is starting
-
     // Use inquirer.prompt to ask the following questions:
     // 1. Full Name
     //    - Type: input
@@ -69,9 +94,7 @@ async function displayForm() {
     // 4. Subscribe to Newsletter
     //    - Type: confirm
     //    - Default: false
-
     // Capture the user's responses
-
     // Display the collected responses in a formatted manner
   } catch (error) {
     // Handle any errors that occur during the form process
@@ -86,7 +109,11 @@ async function displayForm() {
  * @param {Error} error - The error object caught during prompts
  */
 function handleError(error) {
-  
+  if (error.isTtyError) {
+    console.error("Prompt couldn't be rendered in the current environment.");
+  } else {
+    console.error("An error occurred:", error);
+  }
 }
 
 /**
@@ -97,11 +124,9 @@ function handleError(error) {
  */
 async function main() {
   let isAuthenticated = false;
-
+  login()
   // Implement a loop that runs up to 3 times for login attempts
-  for (let attempt = 1; attempt <= 3; attempt++) {
-
-  }
+  // for (let attempt = 1; attempt <= 3; attempt++) {}
 
   // If authenticated, call the displayForm function
 }

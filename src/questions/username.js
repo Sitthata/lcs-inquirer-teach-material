@@ -7,7 +7,7 @@ export async function runInput() {
     const answers = await inquirer.prompt([
       {
         type: "input",
-        name: "inputValue",
+        name: "username",
         message: "Enter your username:",
         // 6. Validate
         validate: (input) => {
@@ -21,7 +21,7 @@ export async function runInput() {
       },
     ]);
 
-    console.log("\nUsername:", answers.inputValue, "\n");
+    console.log("\nUsername:", answers.username, "\n");
   } catch (error) {
     handleError(error);
   }
