@@ -1,11 +1,9 @@
 // form.js
 
-// Import the Inquirer.js library
-// Example: import inquirer from 'inquirer';
+import inquirer from 'inquirer';
 
 /**
  * Define mock user credentials for login
- * Replace 'mockUsername' and 'mockPassword' with desired mock values
  */
 const MOCK_USERNAME = 'mockUsername';
 const MOCK_PASSWORD = 'mockPassword';
@@ -19,21 +17,47 @@ const MOCK_PASSWORD = 'mockPassword';
  * - Return true if authentication is successful, otherwise false
  */
 async function login() {
-  // Display a welcome message to the user
+  console.log('Welcome! Please log in.');
 
   try {
     // Use inquirer.prompt to ask for username and password
-    // Example questions:
-    // 1. Username (input type with validation and filter)
-    // 2. Password (password type with validation)
+    const answers = await inquirer.prompt([
+      {
+        type: 'input',
+        name: 'username',
+        message: 'Enter your username:',
+        validate: (input) => {
+          if (!input.trim()) {
+            return 'Username cannot be empty.';
+          }
+          return true;
+        },
+        filter: (input) => input.trim(),
+      },
+      {
+        type: 'password',
+        name: 'password',
+        message: 'Enter your password:',
+        mask: '*',
+        validate: (input) => {
+          if (!input.trim()) {
+            return 'Password cannot be empty.';
+          }
+          return true;
+        },
+      },
+    ]);
 
-    // Capture the user's input
+    // Validate credentials
+    const { username, password } = answers;
 
-    // Validate the entered credentials against the mock credentials
-
-    // If credentials match, inform the user of successful login and return true
-
-    // If credentials do not match, inform the user and return false
+    if (username === MOCK_USERNAME && password === MOCK_PASSWORD) {
+      console.log('Login successful!');
+      return true;
+    } else {
+      console.log('Invalid username or password.');
+      return false;
+    }
   } catch (error) {
     // Handle any errors that occur during the login process
     handleError(error);
@@ -50,29 +74,63 @@ async function login() {
  */
 async function displayForm() {
   try {
-    // Display a message indicating that the form is starting
+    console.log('\nWelcome to the Form!\n');
 
-    // Use inquirer.prompt to ask the following questions:
-    // 1. Full Name
-    //    - Type: input
-    //    - Validate: Ensure the input is not empty and contains at least two words
-    //    - Filter: Capitalize each word in the name
-    //
-    // 2. Preferred Programming Language
-    //    - Type: list
-    //    - Choices: Provide a list of programming languages
-    //
-    // 3. Experience Level
-    //    - Type: rawList
-    //    - Choices: Provide options like Beginner, Intermediate, Advanced
-    //
-    // 4. Subscribe to Newsletter
-    //    - Type: confirm
-    //    - Default: false
+    const answers = await inquirer.prompt([
+      {
+        type: 'input',
+        name: 'fullName',
+        message: 'Please enter your full name:',
+        validate: (input) => {
+          if (!input.trim()) {
+            return 'Name cannot be empty.';
+          }
 
-    // Capture the user's responses
+          // Ensure at least two words
+          const words = input.trim().split(/\s+/);
+          if (words.length < 2) {
+            return 'Please enter at least first and last name.';
+          }
 
-    // Display the collected responses in a formatted manner
+          return true;
+        },
+        filter: (input) => {
+          // Capitalize each word
+          const words = input.trim().split(/\s+/);
+          const capitalizedWords = words.map((word) => {
+            return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+          });
+          return capitalizedWords.join(' ');
+        },
+      },
+      {
+        type: 'list',
+        name: 'preferredLanguage',
+        message: 'Select your preferred programming language:',
+        choices: ['JavaScript', 'Python', 'Java', 'C++', 'Go'],
+      },
+      {
+        type: 'rawlist',
+        name: 'experienceLevel',
+        message: 'What is your experience level?',
+        choices: ['Beginner', 'Intermediate', 'Advanced'],
+      },
+      {
+        type: 'confirm',
+        name: 'subscribe',
+        message: 'Subscribe to our newsletter?',
+        default: false,
+      },
+    ]);
+
+    console.log('\nThank you for completing the form!');
+    console.log('Here are your responses:\n');
+    console.log(`Full Name: ${answers.fullName}`);
+    console.log(`Preferred Language: ${answers.preferredLanguage}`);
+    console.log(`Experience Level: ${answers.experienceLevel}`);
+    console.log(
+      `Subscribed to Newsletter: ${answers.subscribe ? 'Yes' : 'No'}\n`
+    );
   } catch (error) {
     // Handle any errors that occur during the form process
     handleError(error);
@@ -86,7 +144,11 @@ async function displayForm() {
  * @param {Error} error - The error object caught during prompts
  */
 function handleError(error) {
-  
+  if (error.isTtyError) {
+    console.error('Prompt could not be rendered in the current environment.');
+  } else {
+    console.error('An error occurred:', error);
+  }
 }
 
 /**
@@ -100,10 +162,23 @@ async function main() {
 
   // Implement a loop that runs up to 3 times for login attempts
   for (let attempt = 1; attempt <= 3; attempt++) {
+    console.log(`\n--- Login Attempt ${attempt} of 3 ---`);
+    isAuthenticated = await login();
 
+    if (isAuthenticated) {
+      break;
+    }
+
+    if (attempt < 3) {
+      console.log('Please try again.\n');
+    }
   }
 
-  // If authenticated, call the displayForm function
+  if (isAuthenticated) {
+    await displayForm();
+  } else {
+    console.log('\nMaximum login attempts exceeded. Exiting...');
+  }
 }
 
 /**
