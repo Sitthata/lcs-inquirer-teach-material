@@ -21,6 +21,7 @@ export async function runInput() {
       },
     ]);
 
+    console.log(answers)
     console.log("\nUsername:", answers.inputValue, "\n");
   } catch (error) {
     handleError(error);

@@ -13,7 +13,7 @@ export async function runList() {
       },
     ]);
 
-    console.log('\nFavorite Fruit:', answers.listChoice, '\n');
+    console.log('\nFavorite Fruit:', answers, '\n');
   } catch (error) {
     handleError(error);
   }

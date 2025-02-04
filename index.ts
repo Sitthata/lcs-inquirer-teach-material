@@ -11,11 +11,11 @@ import { runFilter } from "./src/questions/validate-filter.js";
 
 async function main() {
   console.log('--- Inquirer.js Demonstration ---\n');
-    await runOrder();
-//   await runList();
+    // await runOrder();
+  // await runList();
 //   await runRawList();
 //   await runConfirm();
-//   await runInput();
+  await runInput();
 //   await runCheckbox();
 //   await runFilter();
 

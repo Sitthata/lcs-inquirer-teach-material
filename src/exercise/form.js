@@ -2,6 +2,7 @@
 
 // Import the Inquirer.js library
 // Example: import inquirer from 'inquirer';
+import inquirer from 'inquirer';
 
 /**
  * Define mock user credentials for login
@@ -22,18 +23,31 @@ async function login() {
   // Display a welcome message to the user
 
   try {
-    // Use inquirer.prompt to ask for username and password
-    // Example questions:
-    // 1. Username (input type with validation and filter)
-    // 2. Password (password type with validation)
-
-    // Capture the user's input
-
-    // Validate the entered credentials against the mock credentials
-
-    // If credentials match, inform the user of successful login and return true
-
-    // If credentials do not match, inform the user and return false
+    const answers = await inquirer.prompt([
+      {
+        type: "input",
+        name: "username",
+        message: "Enter your username", 
+        validate: (input) => {
+          if (input.length < 1) {
+            return "not empty";
+          }
+          return true;
+        },
+      },
+      {
+        type: "input",
+        name: "password",
+        message: "Enter your password", 
+        validate: (input) => {
+          if (input.length < 1) {
+            return "not empty";
+          }
+          return true;
+        },
+      }      
+    ])
+    console.log(answers)
   } catch (error) {
     // Handle any errors that occur during the login process
     handleError(error);
@@ -86,7 +100,7 @@ async function displayForm() {
  * @param {Error} error - The error object caught during prompts
  */
 function handleError(error) {
-  
+
 }
 
 /**
@@ -98,10 +112,12 @@ function handleError(error) {
 async function main() {
   let isAuthenticated = false;
 
-  // Implement a loop that runs up to 3 times for login attempts
-  for (let attempt = 1; attempt <= 3; attempt++) {
+  await login();
 
-  }
+  // Implement a loop that runs up to 3 times for login attempts
+  // for (let attempt = 1; attempt <= 3; attempt++) {
+
+  // }
 
   // If authenticated, call the displayForm function
 }
