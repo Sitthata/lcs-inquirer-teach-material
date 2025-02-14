@@ -27,7 +27,7 @@ async function login() {
       {
         type: "input",
         name: "username",
-        message: "Enter your username", 
+        message: "Enter your username",
         validate: (input) => {
           if (input.length < 1) {
             return "not empty";
@@ -38,16 +38,22 @@ async function login() {
       {
         type: "input",
         name: "password",
-        message: "Enter your password", 
+        message: "Enter your password",
         validate: (input) => {
           if (input.length < 1) {
             return "not empty";
           }
           return true;
         },
-      }      
+      }
     ])
-    console.log(answers)
+    if (answers.username === MOCK_USERNAME && answers.password === MOCK_PASSWORD) {
+      console.log("login successful")
+      return true
+    } else {
+      console.log("login fail")
+      return false
+    }
   } catch (error) {
     // Handle any errors that occur during the login process
     handleError(error);
@@ -64,6 +70,44 @@ async function login() {
  */
 async function displayForm() {
   try {
+    const answers = await inquirer.prompt([
+      {
+        type: "input",
+        name: "full",
+        message: "Enter your full name",
+        validate: (input) => {
+
+          if (!input.trim()) {
+            return 'fullname cannot be empty.';
+          }
+
+          if (!input.includes(" ")) {
+            return "need first name and last name";
+          }
+          return true;
+        },
+      },
+      {
+        type: 'list',
+        name: 'listChoice',
+        message: 'Select your preferred programming languages :',
+        choices: ['JavaScript', 'Python', 'Java', 'C++', 'Go'],
+      },
+      {
+        type: 'rawlist',
+        name: 'rawListChoice',
+        message: 'Select your preferred programming language:',
+        choices: ['Beginner', 'Intermediate', 'Advanced'],
+      },
+      {
+        type: "confirm",
+        name: "confirmChoice",
+        message: "sub or no",
+        default: false,
+      }
+    ])
+
+    console.log(answers)
     // Display a message indicating that the form is starting
 
     // Use inquirer.prompt to ask the following questions:
@@ -100,7 +144,11 @@ async function displayForm() {
  * @param {Error} error - The error object caught during prompts
  */
 function handleError(error) {
-
+  if (error.isTtyError) {
+    console.error("Prompt couldn't be rendered in the current environment.");
+  } else {
+    console.error("An error occurred:", error);
+  }
 }
 
 /**
@@ -112,12 +160,15 @@ function handleError(error) {
 async function main() {
   let isAuthenticated = false;
 
-  await login();
-
   // Implement a loop that runs up to 3 times for login attempts
-  // for (let attempt = 1; attempt <= 3; attempt++) {
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    isAuthenticated = await login();
 
-  // }
+    if (isAuthenticated) {
+      console.log('fail')
+      break
+    }
+  }
 
   // If authenticated, call the displayForm function
 }
